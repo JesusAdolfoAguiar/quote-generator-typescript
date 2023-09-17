@@ -44,6 +44,11 @@ const App = () => {
     }
   }
 
+  function tweetQuote() {
+    const twitterUrl = `https://twitter.com/intent/tweet?text=${quoteText} - ${authorText}`;
+    window.open(twitterUrl, '_blank');
+  }
+
   return (
     <>
       <div style={{ display: isVisible ? "block" : "none" }} className="quote-container" id="quote-container">
@@ -57,7 +62,7 @@ const App = () => {
           </div>
           
           <div className="button-container">
-              <button className="twitter-button" id="twitter" title="Tweet This!">
+              <button onClick={tweetQuote} className="twitter-button" id="twitter" title="Tweet This!">
                   <i className="fab fa-twitter"></i>
               </button>
               <button id="new-quote" onClick={showQuote}>New Quote</button>
