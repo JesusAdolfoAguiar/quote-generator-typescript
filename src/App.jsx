@@ -1,19 +1,12 @@
 import './App.css';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 const App = () => {
 
-  const [quoteContainer, setQuoteContainer] = useState();
-  const [quoteText, setQuoteText] = useState('Hello')
-  const [authorText, setAuthorText] = useState('Hello');
-  const [twitterBtn, setTwitterBtn] = useState();
-  const [newQuoteBtn, setNewQuoteBtn] = useState();
-  
-  const [isVisible, setIsVisible] = useState(true);
 
-  const handleVisible = () => {
-    setIsVisible(false);
-  }
+  const [quoteText, setQuoteText] = useState('Click the New Quote button to generate a random quote!')
+  const [authorText, setAuthorText] = useState('');
+
   
   let jsonData = "";
   let apiUrl = 'https://jacintodesign.github.io/quotes-api/data/quotes.json';
@@ -51,7 +44,7 @@ const App = () => {
 
   return (
     <>
-      <div style={{ display: isVisible ? "block" : "none" }} className="quote-container" id="quote-container">
+      <div className="quote-container" id="quote-container">
           <div className="quote-text">
               <i className="fas fa-quote-left"></i>
               <span id="quote">{quoteText}</span>
@@ -68,7 +61,6 @@ const App = () => {
               <button id="new-quote" onClick={showQuote}>New Quote</button>
           </div>
       </div>
-      <div style={{ display: isVisible ? "block" : "none" }} className="loader" id="loader"></div>
     </>
   );
 }
