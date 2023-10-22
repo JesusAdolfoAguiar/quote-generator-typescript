@@ -1,68 +1,77 @@
+
+import React, { useState, useEffect } from 'react';
 import './App.css';
-import React, { useState } from 'react';
 
-const App = () => {
+const Quote = () => {
+    const [quote, setQuote] = useState('');
+    const [author, setAuthor] = useState('');
+    const [loading, setLoading] = useState(true);
 
+    useEffect(() => {
+        getQuote();
+    }, []);
 
-  const [quoteText, setQuoteText] = useState('Click the New Quote button to generate a random quote!')
-  const [authorText, setAuthorText] = useState('');
+    const showLoadingSpinner = () => {
+        setLoading(true);
+    };
 
-  
-  let jsonData = "";
-  let apiUrl = 'https://jacintodesign.github.io/quotes-api/data/quotes.json';
-  
-  const fetchtQuote = async(url) => {
-    let response = await fetch(url);
-    let data = await response.json()
-    return data;
-  }
+    const hideLoadingSpinner = () => {
+        setLoading(false);
+    };
 
-  const showQuote = async () => {
-    jsonData = await fetchtQuote(apiUrl);
-    var randomNumber = Math.floor(Math.random() * (jsonData.length));
-    console.log(randomNumber)
+    let isLongQuote;
 
-    if (jsonData[randomNumber].author === '') {
-      setAuthorText('Unknown');
-    } else {
-      setAuthorText(jsonData[randomNumber].author);
-    }
-
-    if (jsonData[randomNumber].text.length > 120) {
-        document.querySelector("#quote").classList.add('long-quote');
-        setQuoteText(jsonData[randomNumber].text)
-    } else {
-        document.querySelector("#quote").classList.remove('long-quote');
-        setQuoteText(jsonData[randomNumber].text)
-    }
-  }
-
-  function tweetQuote() {
-    const twitterUrl = `https://twitter.com/intent/tweet?text=${quoteText} - ${authorText}`;
-    window.open(twitterUrl, '_blank');
-  }
-
-  return (
-    <>
-      <div className="quote-container" id="quote-container">
-          <div className="quote-text">
-              <i className="fas fa-quote-left"></i>
-              <span id="quote">{quoteText}</span>
-          </div>
-
-          <div className="quote-author">
-              <span id="author">{authorText}</span>
-          </div>
+    const getQuote = async () => {
+        showLoadingSpinner();
+        const apiUrl = 'https://jacintodesign.github.io/quotes-api/data/quotes.json';
+        
+        try {
+            const response = await fetch(apiUrl);
+            const data = await response.json();
           
-          <div className="button-container">
-              <button onClick={tweetQuote} className="twitter-button" id="twitter" title="Tweet This!">
-                  <i className="fab fa-twitter"></i>
-              </button>
-              <button id="new-quote" onClick={showQuote}>New Quote</button>
-          </div>
-      </div>
-    </>
-  );
-}
+            const randomNumber = Math.floor(Math.random() * data.length);
+            const  quoteAuthor = data[randomNumber].author;
+            const  quoteText = data[randomNumber].text;
 
-export default App;
+            setAuthor(quoteAuthor || 'Unknown');
+            setQuote(quoteText);
+
+            isLongQuote = quoteText.length > 120;
+
+            hideLoadingSpinner();
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const tweetQuote = () => {
+        const twitterUrl = `https://twitter.com/intent/tweet?text=${quote} - ${author}`;
+        window.open(twitterUrl, '_blank');
+    };
+
+    return (
+        <div className="quote-container" id="quote-container">
+            {loading ? (
+                <div className="loader" id="loader"></div>
+            ) : (
+                <>
+                    <div className={`quote-text ${isLongQuote ? 'long-quote' : ''}`}>
+                        <i className="fas fa-quote-left"></i>
+                        <span id="quote">{quote}</span>
+                    </div>
+                    <div className="quote-author">
+                        <span id="author">{author}</span>
+                    </div>
+                    <div className="button-container">
+                        <button className="twitter-button" id="twitter" onClick={tweetQuote} title="Tweet This!">
+                            <i className="fab fa-twitter"></i>
+                        </button>
+                        <button id="new-quote" onClick={getQuote}>New Quote</button>
+                    </div>
+                </>
+            )}
+        </div>
+    );
+};
+
+export default Quote;
