@@ -23,15 +23,15 @@ const Quote = () => {
 
     const getQuote = async () => {
         showLoadingSpinner();
-        const apiUrl = 'https://jacintodesign.github.io/quotes-api/data/quotes.json';
+        const apiUrl:string = 'https://jacintodesign.github.io/quotes-api/data/quotes.json';
         
         try {
             const response = await fetch(apiUrl);
             const data = await response.json();
           
-            const randomNumber = Math.floor(Math.random() * data.length);
-            const  quoteAuthor = data[randomNumber].author;
-            const  quoteText = data[randomNumber].text;
+            const randomNumber:number = Math.floor(Math.random() * data.length);
+            const  quoteAuthor:string = data[randomNumber].author;
+            const  quoteText:string = data[randomNumber].text;
 
             setAuthor(quoteAuthor || 'Unknown');
             setQuote(quoteText);
